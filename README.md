@@ -5,9 +5,6 @@ This repository contains the full source materials for the computational social 
 
 The goal is to move beyond composite measures (like the standard PISA ESCS index) to compare the separate effects of these factors on performance across countries and subjects, providing a nuanced account intended to inform educational policy.
 
-
-## Repository Structure
-
 ## Repository Structure
 
 | Folder/File | Description | Purpose |
