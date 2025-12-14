@@ -1,0 +1,10 @@
+matplotlib
+numpy
+openpyxl
+pandas
+pycountry
+pyreadstat
+scipy
+seaborn
+statsmodels
+thefuzz

@@ -35,7 +35,7 @@ total_weight = df_mean.groupby(country_id_var)[weight_var].sum()
 mean_math_scores = (weighted_sum / total_weight).rename('Mean_Math_Score')
 
 # Prepare output files
-out_dir = Path(__file__).parent.parent / 'output'
+out_dir = Path(__file__).parent.parent / 'temp'
 out_dir.mkdir(parents=True, exist_ok=True)
 csv_path = out_dir / 'mean_math_countries.csv'
 json_path = out_dir / 'mean_math_countries.json'
