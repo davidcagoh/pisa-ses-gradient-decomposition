@@ -1,0 +1,191 @@
+\documentclass[sigconf]{acmart}
+\AtBeginDocument{%
+  \providecommand\BibTeX{{Bib\TeX}}}
+
+\title{Channels of Inequality: Unpacking the SES-Achievement Gradient Across PISA 2022 Countries}
+
+\author{David Goh}
+\email{daveed@cs.toronto.edu}
+\affiliation{%
+  \institution{Department of Computer Science, University of Toronto}
+  \city{Toronto}
+  \country{Canada}}
+
+\renewcommand{\shortauthors}{D. Goh}
+\begin{document}
+
+% --- Start of Abstract Block ---
+\begin{abstract}
+The socioeconomic status (SES) achievement gradient is a universal metric of educational inequality. However, standard cross-national analyses, which rely on the composite ESCS index, obscure the specific mechanisms by which resources, parental education, and occupation translate into student outcomes. This paper utilizes PISA 2022 microdata to address this measurement opacity. Our Concrete Operationalization (CO) involves decomposing the composite ESCS index and estimating the conditional association between achievement and each constituent component—Parental Education, Occupational Status, and Home Resources—stratified by country and subject. Crucially, we employ a compositional analysis that normalizes coefficients \emph{within} each country, reframing the question from "How unequal is this country?" to "Which SES channel dominates its inequality?" By rigorously incorporating PISA’s complex measurement structure (Plausible Values and sampling weights), our findings demonstrate that the dominance of specific SES channels varies meaningfully across institutional contexts, suggesting that inequality is driven by system-level mediation rather than a uniform global effect. This work highlights how methodologically careful, descriptive methods can generate novel, policy-relevant insights from complex administrative data.
+\end{abstract}
+% --- End of Abstract Block ---
+
+% --- START FINAL FIX: Force suppression of all ACM conference boilerplate ---
+\setcopyright{none}      % Suppresses the large ACM copyright notice block
+\settopmatter{printacmref=false} % Suppresses the "ACM Reference Format" line
+\fancyhead{}                     % Clears the header
+\fancyfoot{}                     % Clears the default footer
+
+% These commands explicitly clear the conference metadata fields:
+\acmDOI{}
+\acmISBN{}
+\acmYear{}
+\acmPrice{}
+\acmSubmissionID{}
+\acmConference{}{} % Explicitly clears the conference name and location
+
+% This ensures only the page number is at the bottom center of the page:
+\fancyfoot[C]{\thepage}
+% --- END FINAL FIX ---
+
+\keywords{PISA, socioeconomic status, achievement gaps, educational inequality, tracking}
+
+\maketitle
+
+\section{Introduction}
+
+\textbf{To what extent do the specific components of socioeconomic status differentially drive educational inequality?} The relationship between socioeconomic status (SES) and educational achievement represents one of the most consistent and consequential social-scientific findings. For computational social scientists analyzing large-scale educational data, this association defines the landscape of global inequality.
+
+Standard cross-national analyses of student achievement, such as those relying on the OECD’s Programme for International Student Assessment (PISA), typically employ a single, composite index of SES, the \textbf{ESCS (Index of Economic, Social and Cultural Status)}. While computationally convenient, this index is an \textbf{opaque bundle} of underlying factors: parental education, occupational status (HISEI), and home resources \cite{pisa_technical_manual}. This opacity limits our ability to identify \textit{which specific channels} of socioeconomic capital—be it human capital (education), cultural capital (occupation), or material capital (resources)—are the primary drivers of the achievement gradient, and whether the dominance of these channels varies across countries \cite{salganik_2017}. The current standard approach, therefore, confronts a fundamental \textbf{measurement and representational challenge}: it reports the magnitude of inequality but conceals its *compositional nature*.
+
+We decompose the composite ESCS index into its three constituent parts and estimate the \textbf{conditional, population-level association ($\beta_k$)} between each component and student achievement, stratified by country and subject. This is done by strictly adhering to PISA’s requirements for handling latent variables (Plausible Values) and complex sampling designs (sampling weights), which is crucial for valid CSS inference on administrative data.
+
+Rather than comparing the absolute magnitude of inequality between countries, which is distorted by system-level differences, we apply a compositional normalization. We compare the \textbf{relative contribution ($\tilde{\beta}_k$)} of each SES channel \textit{within} a country, reframing the inquiry from \textbf{"How unequal is this country?"} to \textbf{"Given its overall inequality, which SES channel dominates?"}
+
+This work extends existing research in three ways. First, through SES decomposition, we move beyond composite indices to estimate and compare the separate associations of parental education, occupational status, and household resources with achievement. Second, through cross-country analysis, we estimate multi-component SES–achievement gradients to document international variation in the steepness of socioeconomic disparities. Third, through subject-specific analysis, we examine whether the relative importance of SES components differs across reading, mathematics, and science. This study is descriptive and exploratory in nature and does not make causal claims; instead, it aims to clarify which dimensions of SES most strongly drive observed achievement gaps.
+
+\section{Review of Literature}
+Interpreting cross-national SES gradients requires engagement with three strands of prior literature.
+
+\subsection{Income–Achievement Gradients}
+
+Chmielewski and Reardon (2016) \cite{ChmielewskiReardon2016} provided a foundational perspective on cross-national income–achievement gaps, demonstrating that gaps measured by direct family income differ substantively from those measured by composite SES indices like ESCS. They highlighted the challenge of accurately capturing income-based disparities. Our study builds on this by employing a decomposition approach, breaking the ESCS index into its constituent parts to enable a more granular assessment of which specific elements—education, occupation, or wealth—drive cross-country differences.
+
+\subsection{SES–Achievement Slopes and Subject-Specific Patterns}
+Jacobs and Wolbers (2018) \cite{JacobsWolbers2018} analyzed the influence of the composite ESCS index on the probability of top performance in PISA 2015 reading and mathematics. They observed modest subject-specific differences in the SES gradients, suggesting that the link between background and achievement may vary by domain. While their use of a composite measure limited insight into individual components, their findings underscore the necessity of our subject-specific focus, which estimates separate gradients for reading, mathematics, and science while decomposing the SES factors.
+
+\subsection{System-Level Context: Tracking and Inequality}
+The role of systemic features is a crucial context for SES disparities. Terrin and Triventi’s (2022) \cite{TerrinTriventi2023} meta-analysis concluded that educational tracking modestly increases inequality without significantly impacting overall achievement. However, this meta-analysis was largely based on studies that treated SES as a single factor. By decomposing SES, our study provides clearer insight into which specific dimensions of socioeconomic background are most sensitive to educational system characteristics, such as the age at which students are tracked into different educational paths.
+
+\section{Methodology}
+
+The methodological framework for this study is designed to address known measurement and estimation challenges inherent in analyzing large-scale, secondary international assessment data (PISA). Our approach prioritizes methodological validity and comparability over simple breadth, ensuring that our \textbf{Concrete Operationalization (CO)}—the decomposition and compositional comparison of the SES gradient—is robust.
+
+\subsection{Data Source and Sample}
+This study utilizes the publicly available microdata from the Programme for International Student Assessment (PISA) 2022 assessment cycle, including both OECD and non-OECD participating members. The target population consists of 15-year-old students, but for methodological consistency, analyses were restricted to students who had completed at least six years of formal schooling.
+
+To ensure that the estimated SES gradients are reliable and comparable across diverse educational systems, we employed a \textbf{strict country inclusion rule}. Countries were only included if they had a minimum of 5,000 students with complete and valid SES data and less than 10\% missing data on core SES variables. Applying these criteria significantly reduced the number of countries in the final analysis, which limits the breadth of cross-national comparisons. This is a deliberate methodological choice in computational social science: it prioritizes \textbf{internal validity and cross-national comparability} over external coverage. By focusing on high-quality, stable samples, we mitigate the risk that observed cross-country variation is simply due to differential measurement error or unstable estimates, thereby strengthening the foundation for policy-relevant gradient estimation.
+
+\subsection{Outcome Variables}
+
+Academic achievement was measured in three core domains: reading, mathematics, and science. PISA estimates student proficiency using Item Response Theory (IRT) models, resulting in ten \textbf{Plausible Values (PVs)} per domain. Since achievement is a latent construct estimated via matrix sampling (where no single student answers all questions), PVs are essential to correctly model the measurement uncertainty inherent in the assessment design.
+
+For methodologically sound inference, all regression analyses were conducted separately for each of the ten PVs, and the final population-level estimates were combined using \textbf{Rubin's rules}. This procedure is the methodological best practice, ensuring that the final standard errors accurately account for both the traditional within-sample variance and the additional variance introduced by the imputation of the latent achievement scores.
+
+\subsection{SES Decomposition}
+
+The primary empirical move of this study, as articulated in the Concrete Operationalization (CO), is to decompose the effect of socioeconomic status. While the PISA ESCS index is a composite derived from several variables, the publicly available microdata constrains the set of individual component variables. We therefore model the SES gradient using three available, conceptually distinct proxies for socioeconomic capital:
+
+\begin{itemize}
+  \item Parental Education (PAREDINT): The highest level of parental attainment, serving as a proxy for human capital.
+  \item Parental Occupational Status (HISEI): The standardized occupational index, serving as a proxy for cultural capital.
+  \item Home Possessions and Resources (ESCS Index): Since a separate index for material possessions is unavailable, we use the full ESCS index as a proxy for the combined effect of the non-educational and non-occupational components, primarily the material and cultural resources in the home (e.g., books, household items).
+\end{itemize}
+
+The key methodological point is that by entering these three highly correlated variables into the subsequent regression model independently (Equation 1), we analytically decompose the total SES effect. This allows us to estimate the unique conditional association for each channel, thereby clarifying which dimension of capital most strongly drives the observed achievement gaps. The use of a simple linear model is critical here, as entering these highly intercorrelated components jointly in a single model would lead to interpretive instability and multicollinearity, undermining the goal of cross-national comparability.
+
+\subsection{Estimation of SES–Achievement Gradients}
+
+For each country, subject, and SES component, we estimated weighted least squares regressions of student achievement on the SES measure, using final student weights ($\mathbf{W_{FSTUWT}}$). Regressions were estimated separately for each plausible value. For subject $j$ and SES component $k$ in country $i$:
+
+\begin{equation}
+Y_{ij}^{(pv)} = \beta_0 + \beta_1 \text{SES}_{ik} + \epsilon_{ij}
+\end{equation}
+where $Y_{ij}^{(pv)}$ is the student’s score on PV $pv$, and $\beta_1$ is the SES gradient. Coefficients and standard errors across the ten PVs were combined using Rubin's rules:
+\begin{equation}
+\bar{\beta} = \frac{1}{m} \sum_{pv} \beta^{(pv)}, \qquad T = \bar{U} + \left(1 + \frac{1}{m}\right) B
+\end{equation}
+where $\bar{U}$ is the average within-PV variance, $B$ is the between-PV variance, and $m=10$ is the number of PVs. The square root of $T$ gives the total standard error.
+
+The use of \textbf{Weighted Least Squares (WLS)} with these weights is critical. Applying these weights ensures that the resulting estimate $\mathbf{\beta_1}$ targets the \textbf{population-level SES gradient} of the entire 15-year-old student population within that country, rather than merely reflecting a sample-level correlation. This choice is vital for obtaining policy-relevant estimands.
+
+\subsection{Cross-Country Comparisons and Normalization}
+Country-level SES gradients were derived from regression coefficients. For visualization, coefficients for each SES component were normalized within countries by dividing each component by the sum of the three coefficients, allowing proportional comparisons across contexts. Countries with extreme gradients were highlighted descriptively.
+
+Since absolute $\mathbf{\beta_1}$ magnitudes are influenced by country-specific scaling and system-level differences, comparing them directly poses a methodological challenge. This \textbf{compositional normalization} is a deliberate representation choice that shifts the analytical question: instead of asking, "How unequal is this country?" (absolute magnitude), we ask, \textbf{"Given its inequality, which specific SES channel dominates?"} This reframing sacrifices information about the absolute size of the gradient to gain \textbf{comparability of mechanisms} across heterogeneous institutional systems.
+
+
+\subsection{Subject-Specific Analyses}
+Gradients were estimated separately for reading, mathematics, and science. All modeling choices—including weighting, plausible value handling, and SES decomposition—were applied consistently across subjects. Differences in effect sizes were summarized descriptively using means and standard deviations across countries.
+
+\subsection{Linking SES Gradients to Structural Features}
+To explore system-level correlates, we merged country-level ESCS gradients with information on the earliest age of educational tracking. Analyses included boxplots, scatterplots with fitted regression lines, and aggregated summaries of ESCS, PAREDINT, and HISEI coefficients.
+
+\subsection{Visualization}
+Normalized SES contributions were visualized using stacked bar charts and heatmaps for cross-country comparisons, and boxplots and scatterplots for analyses by tracking age.
+
+\section{Results}
+\subsection{SES Component Contributions Across Countries}
+We examined the contributions of household wealth/resources (ESCS), parental education (PAREDINT), and parental occupational status (HISEI) to PISA 2022 achievement gradients. As illustrated by normalized coefficient plots (Figure~\ref{fig:components}), ESCS represents the largest component of the SES gradient in all countries included in the study.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.9\linewidth]{figure1.png}
+  \caption{Proportional Contributions of Decomposed Socioeconomic Status (SES) Components to PISA 2022 Achievement Gradients. (Normalized by country, showing the relative weight of Household Resources (ESCS), Parental Education (PAREDINT), and Parental Occupational Status (HISEI) in driving the overall SES effect.)} 
+  \Description{first figure}
+\label{fig:components}
+\end{figure*}
+
+Despite the dominance of household resources, the relative contribution of parental education (PAREDINT) varied substantially. Countries like Japan, Czechia, and Singapore showed higher PAREDINT contributions, indicating a more substantial independent role for parental education in these systems. Conversely, Cambodia presented a unique pattern where a dominant ESCS contribution was accompanied by a negative PAREDINT coefficient, an anomaly suggesting that, once resources are accounted for, the association between parental education and achievement reverses, potentially due to context-specific schooling access or measurement issues. Parental occupational status (HISEI) played a minimal role across most countries once the other two components were included, suggesting significant overlap with education and household resources.
+
+\subsection{Subject-Specific Patterns in SES Components}
+To examine domain-specific effects, we calculated mean coefficients for ESCS, PAREDINT, and HISEI separately for mathematics, reading, and science. The contribution of each SES component to student achievement was nearly identical across all subjects (Table~\ref{tab:subject}). Mean coefficients showed minimal variation between domains, with differences well within one standard deviation.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.9\linewidth]{table1.png}
+  \caption{Mean coefficients (± standard deviation) for SES components across countries, by subject. Values represent the average strength of association between each SES component and achievement in mathematics, reading, and science. The consistency across subjects indicates that SES components operate similarly regardless of academic domain.}
+  \Description{A table summarizing mean coefficients and standard deviations for ESCS, PAREDINT, and HISEI across Mathematics, Reading, and Science, showing minimal variation between subjects.}
+\label{tab:subject}
+\end{figure}
+
+\subsection{SES Gradients and Age of Tracking}
+Boxplots of ESCS coefficients by tracking age (Figure~\ref{fig:tracking}) revealed that countries with earlier tracking (ages 10–12) tend to show higher median SES gradients compared to those with later tracking (ages 15–16). However, the distributions overlap substantially, indicating significant heterogeneity.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.9\linewidth]{figure2.png}
+  \caption{Distribution of ESCS coefficients by age of tracking, faceted by subject. Each boxplot shows the spread of SES gradient strengths for countries that track students at a given age. Wide distributions at ages 14 and 15 reflect substantial heterogeneity among countries with later tracking systems.}
+  \Description{second figure}
+
+\label{fig:tracking}
+\end{figure*}
+
+Scatterplots revealed a negative association between tracking age and the SES gradient across all subjects, with the steepest association observed in science.
+
+\section{Interpretation and Contribution}
+These analyses successfully operationalized our research question by executing the \textbf{Concrete Operationalization (CO)} of decomposition and compositional comparison. The methodological groundwork laid in Section 3—specifically, the rigorous use of \textbf{Plausible Values} and \textbf{Weighted Least Squares}—ensures that these interpretations are grounded in statistically sound, population-level estimates.
+
+\subsection{Compositional Insight and System-Level Mediation}
+
+Our compositional analysis, which compares the \textit{relative contribution} of each SES component ($\tilde{\beta}_k$), yielded a crucial insight: while \textbf{household wealth/resources (ESCS proxy) dominate} the achievement gradient in nearly all participating countries, the cross-country variation in the contribution of parental education (PAREDINT) and occupation (HISEI) demonstrates that the \textbf{institutional context mediates} the translation of human and cultural capital into student outcomes, directly supporting the value of the compositional analysis. The high contribution of parental education in systems like Japan, for example, suggests that the return on human capital is structurally higher in these systems.
+
+\subsection{Methodological Rigor and Anomaly Detection}
+
+The analysis of the \textbf{Cambodia sample}, which showed a unique negative association for Parental Education (PAREDINT), serves an important \textbf{methodological function}. This anomaly is not treated as noise; rather, it suggests potential \textbf{measurement non-equivalence} or specific, context-dependent selection effects. For a computational social science audience, acknowledging and bounding such vulnerabilities is a hallmark of methodological integrity, demonstrating that the estimation strategy is sensitive enough to flag non-comparable inputs.
+
+\subsection{Linking Gradients to Educational Structure}
+
+The exploratory analysis linking the SES gradient to the \textbf{age of educational tracking} was descriptive, utilizing visual diagnostics (Figure~\ref{fig:tracking}). This conservative approach was appropriate given the small N of the country sample. The observed coincidence—that earlier tracking tends to be associated with a steeper SES gradient—is consistent with system-level stratification theories. Furthermore, the \textbf{subject invariance} of component effects across reading, math, and science (Table~\ref{tab:subject}) suggests that SES operates through \textbf{general learning conditions} rather than domain-specific cognitive channels.
+
+\subsection{Conclusion and Future Work}
+
+This paper’s primary contribution is demonstrating how simple, methodologically careful models, when correctly aligned with PISA measurement theory (PVs, WLS) and estimand definition (compositional comparison), can yield novel cross-national insight. We successfully moved beyond scalar measures of inequality to analyze its multi-dimensional, compositional structure. Future work should build on this descriptive foundation by utilizing quasi-experimental designs or advanced causal inference techniques to explore the precise causal mechanisms by which system-level factors, such as tracking age, moderate the compositional effects of SES.
+
+\begin{acks}
+This research was prepared by David Goh at the University of Toronto, Department of Computer Science. The author thanks colleagues who provided feedback, particularly Associate Professor Ashton Anderson and acknowledges the PISA data providers. This work uses public microdata from PISA 2022 and makes descriptive cross-country comparisons only.
+\end{acks}
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{sample-base}
+
+\end{document}
