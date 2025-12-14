@@ -13,11 +13,10 @@ The goal is to move beyond composite measures (like the standard PISA ESCS index
 | Folder/File | Description | Purpose |
 | :--- | :--- | :--- |
 | `report/` | Contains the LaTeX source, bibliography (`.bib`), and the final compiled PDF (`sample-sigconf.pdf`). | Source for the academic paper and final output. |
-| `scripts/` | **Primary code source.** All files (e.g., R or Python scripts) used for data cleaning, statistical modeling, and figure generation. | Reproducibility of all quantitative results. |
+| `analysis/` | **Primary code source.** All files (e.g., R or Python scripts) used for data cleaning, statistical modeling, and figure generation. | Reproducibility of all quantitative results. |
 | `data/` | Root directory for all data, including PISA microdata downloads and external files (e.g., World Bank API). | Standard location for all inputs (excludes large PISA files via `.gitignore`). |
-| `analysis/` | *(Likely legacy folder or housing helper functions)*. | Secondary code/model outputs or helper scripts. |
+| `scripts/` | Secondary code/model outputs or helper scripts. |
 | `talk/` | Contains the presentation slides or materials related to the project. | Communication and presentation of research findings. |
-| `figures/` | Contains all final, generated visuals (e.g., `figure1.png`, `table1.png`) inserted into the report. | Final assets for publication. |
 | `requirements.txt` | Lists the necessary software packages and dependencies (e.g., Python packages or R libraries). | Environment setup and dependency management. |
 | `.gitignore` | Specifies which files (e.g., LaTeX compilation artifacts, temp data) Git should ignore. | Keeps the repository clean and focused on source code. |
 
